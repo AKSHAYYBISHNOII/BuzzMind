@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BUZZmind — Turn Ideas Into Plans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b0c;
+    --bg2: #111114;
+    --bg3: #18181d;
+    --surface: #1e1e24;
+    --surface2: #252530;
+    --amber: #e8952a;
+    --amber-dim: #9d6018;
+    --amber-glow: rgba(232,149,42,0.12);
+    --amber-glow2: rgba(232,149,42,0.06);
+    --text: #f0ede8;
+    --text-muted: #7a7878;
+    --text-dim: #4a4848;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(232,149,42,0.2);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --green: #3ecf7a;
+    --blue: #4f9cf9;
+    --red: #f06060;
+    --purple: #a87fdc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(11,11,12,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--amber);
+    display: inline-block;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--amber);
+    color: #000;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 40px 80px;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid var(--border2);
+    background: var(--amber-glow2);
+    color: var(--amber);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(40px, 6vw, 76px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+
+  .hero h1 .accent { color: var(--amber); }
+
+  .hero-sub {
+    max-width: 480px;
+    color: var(--text-muted);
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 52px;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+
+  /* MAIN INPUT BOX */
+  .thought-box {
+    width: 100%;
+    max-width: 680px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    animation: fadeUp 0.6s ease 0.3s both;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    z-index: 2;
+  }
+
+  .thought-box:focus-within {
+    border-color: var(--border2);
+    box-shadow: 0 0 0 4px var(--amber-glow2), 0 24px 64px rgba(0,0,0,0.5);
+  }
+
+  .thought-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .thought-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.6;
+    resize: none;
+    min-height: 80px;
+    caret-color: var(--amber);
+  }
+
+  .thought-input::placeholder { color: var(--text-dim); }
+
+  .thought-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .thought-hints {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .hint-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .hint-chip:hover {
+    border-color: var(--amber-dim);
+    color: var(--amber);
+    background: var(--amber-glow2);
+  }
+
+  .convert-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--amber);
+    color: #000;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .convert-btn:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
+  .convert-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .convert-btn .btn-arrow {
+    transition: transform 0.2s;
+  }
+  .convert-btn:hover:not(:disabled) .btn-arrow { transform: translateX(3px); }
+
+  /* BACKGROUND GLOW */
+  .hero-glow {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,149,42,0.08) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* LOADING STATE */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(11,11,12,0.92);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .loading-overlay.active { display: flex; }
+
+  .loader-ring {
+    width: 56px; height: 56px;
+    border: 2px solid var(--border);
+    border-top-color: var(--amber);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loader-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  .loader-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .loader-step {
+    font-size: 13px;
+    color: var(--text-dim);
+    transition: color 0.4s;
+  }
+
+  .loader-step.active { color: var(--amber); }
+  .loader-step.done { color: var(--green); }
+
+  /* RESULTS SECTION */
+  #results {
+    display: none;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 40px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  #results.visible { display: block; }
+
+  .results-header {
+    margin-bottom: 40px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .results-thought {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .results-thought-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .results-thought-text .q { color: var(--amber); font-style: italic; }
+
+  .reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .reset-btn:hover { border-color: var(--border2); color: var(--text); }
+
+  /* GRID */
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .results-grid .full { grid-column: 1 / -1; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    animation: fadeUp 0.5s ease both;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover::before { opacity: 0.6; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .card-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .icon-amber { background: var(--amber-glow); }
+  .icon-green { background: rgba(62,207,122,0.12); }
+  .icon-blue { background: rgba(79,156,249,0.12); }
+  .icon-purple { background: rgba(168,127,220,0.12); }
+
+  /* DAILY PLAN */
+  .task-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg3);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .task-item:hover { border-color: rgba(255,255,255,0.12); }
+
+  .task-item.completed {
+    opacity: 0.5;
+  }
+
+  .task-check {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--text-dim);
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 10px;
+  }
+
+  .task-item.completed .task-check {
+    background: var(--green);
+    border-color: var(--green);
+    color: #000;
+  }
+
+  .task-content { flex: 1; }
+
+  .task-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 2px;
+    transition: all 0.2s;
+  }
+
+  .task-item.completed .task-title {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .task-meta {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .task-time {
+    font-size: 11px;
+    color: var(--amber);
+    background: var(--amber-glow2);
+    padding: 2px 8px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    margin-top: 16px;
+    background: var(--bg3);
+    border-radius: 100px;
+    height: 5px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--amber);
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 0%;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .progress-pct { color: var(--amber); font-weight: 500; }
+
+  /* ROADMAP */
+  .roadmap-list { display: flex; flex-direction: column; gap: 0; }
+
+  .roadmap-item {
+    display: flex;
+    gap: 16px;
+    position: relative;
+  }
+
+  .roadmap-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 30px;
+    bottom: -10px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .roadmap-node {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+    z-index: 1;
+    transition: all 0.3s;
+    background: var(--bg3);
+  }
+
+  .roadmap-item.current .roadmap-node {
+    border-color: var(--amber);
+    color: var(--amber);
+    box-shadow: 0 0 0 4px var(--amber-glow2);
+  }
+
+  .roadmap-item.done .roadmap-node {
+    border-color: var(--green);
+    background: rgba(62,207,122,0.15);
+    color: var(--green);
+  }
+
+  .roadmap-content {
+    padding: 4px 0 20px;
+  }
+
+  .roadmap-week {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .roadmap-item.current .roadmap-week { color: var(--amber); }
+
+  .roadmap-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .roadmap-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* REMINDERS */
+  .reminder-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .reminder-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg3);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .reminder-item:hover { border-color: rgba(255,255,255,0.12); }
+
+  .reminder-time {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--amber);
+    min-width: 55px;
+  }
+
+  .reminder-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .reminder-toggle {
+    width: 32px; height: 18px;
+    background: var(--amber);
+    border-radius: 100px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .reminder-toggle.off { background: var(--surface2); }
+
+  .reminder-toggle::after {
+    content: '';
+    position: absolute;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    top: 3px;
+    right: 3px;
+    transition: transform 0.2s, right 0.2s;
+  }
+
+  .reminder-toggle.off::after { right: auto; left: 3px; }
+
+  /* SMART NUDGES */
+  .nudge-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .nudge-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: var(--bg3);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .nudge-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .nudge-content { flex: 1; }
+
+  .nudge-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .nudge-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* HABIT TRACKER */
+  .habit-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 12px;
+    align-items: center;
+  }
+
+  .habit-name {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .habit-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .habit-dot {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+  }
+
+  .habit-dot.done {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: #000;
+    font-weight: 700;
+  }
+
+  .habit-dot.partial {
+    background: var(--amber-glow);
+    border-color: var(--amber-dim);
+  }
+
+  .habit-dot:hover { transform: scale(1.15); }
+
+  .habit-day-labels {
+    grid-column: 2;
+    display: flex;
+    gap: 5px;
+    margin-bottom: -4px;
+  }
+
+  .habit-day-label {
+    width: 20px;
+    text-align: center;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0;
+  }
+
+  /* STAT STRIP */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--amber);
+    letter-spacing: -1px;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  /* SCROLL REVEAL */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* FEATURES SECTION */
+  .features {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 40px;
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--amber);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 48px;
+    max-width: 500px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: border-color 0.3s;
+  }
+
+  .feature-card:hover { border-color: var(--border2); }
+
+  .feature-icon {
+    font-size: 22px;
+    margin-bottom: 14px;
+  }
+
+  .feature-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .feature-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+  /* ERROR */
+  .error-toast {
+    display: none;
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface2);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    z-index: 300;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .error-toast.visible { display: block; animation: fadeUp 0.3s ease both; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-dim);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+  @media (max-width: 700px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 20px 60px; }
+    #results { padding: 40px 20px 60px; }
+    .results-grid { grid-template-columns: 1fr; }
+    .features { padding: 60px 20px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .stat-strip { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat-value { font-size: 22px; }
+    .thought-hints { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <span class="logo-dot"></span>
+    BUZZmind
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">How it works</a></li>
+    <li><a href="#results">My Plans</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.querySelector('.thought-input').focus()">Try it free</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">
+    <span style="color:var(--amber)">✦</span> AI-powered planning
+  </div>
+
+  <h1>
+    Your <span class="accent">thoughts</span>,<br>
+    turned into <span class="accent">action</span>
+  </h1>
+
+  <p class="hero-sub">
+    Speak your mind in plain language. Get a structured daily plan, reminders, and roadmap — instantly.
+  </p>
+
+  <div class="thought-box">
+    <div class="thought-label">What's on your mind?</div>
+    <textarea
+      class="thought-input"
+      id="thoughtInput"
+      placeholder="e.g. I want to get fit but never stick to routines…"
+      rows="3"
+    ></textarea>
+    <div class="thought-footer">
+      <div class="thought-hints">
+        <div class="hint-chip" data-thought="I want to learn DSA but I'm lazy" onclick="setThought(this.dataset.thought)">Learn DSA</div>
+        <div class="hint-chip" data-thought="I want to read more books but I always forget" onclick="setThought(this.dataset.thought)">Read more books</div>
+        <div class="hint-chip" data-thought="I need to get fit but I hate going to the gym" onclick="setThought(this.dataset.thought)">Get fit</div>
+        <div class="hint-chip" data-thought="I want to start a side project but I keep procrastinating" onclick="setThought(this.dataset.thought)">Side project</div>
+      </div>
+      <button class="convert-btn" id="convertBtn" onclick="convertThought()">
+        Convert <span class="btn-arrow">→</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES SECTION -->
+<section class="features" id="features">
+  <div class="section-label">How it works</div>
+  <h2 class="section-title">From fuzzy thoughts to focused execution</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🎙️</div>
+      <div class="feature-title">Natural input</div>
+      <div class="feature-desc">Just describe your goal in your own words — no frameworks, no jargon. Be as vague or specific as you like.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">AI structuring</div>
+      <div class="feature-desc">Our AI understands your intent and converts it into daily tasks, milestones, and smart reminders automatically.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📈</div>
+      <div class="feature-title">Habit tracking</div>
+      <div class="feature-desc">Track streaks, completion rates, and get nudged when you're falling behind. Momentum is built, not hoped for.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🗺️</div>
+      <div class="feature-title">Visual roadmap</div>
+      <div class="feature-desc">See your entire journey week by week. Know exactly where you are and what's coming next.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔔</div>
+      <div class="feature-title">Smart reminders</div>
+      <div class="feature-desc">Context-aware nudges — not just alarms. Reminders that adapt based on your behavior patterns.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧠</div>
+      <div class="feature-title">Bridges thinking → doing</div>
+      <div class="feature-desc">Most apps help you organize tasks. We bridge the gap between having an idea and actually executing on it.</div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS SECTION -->
+<section id="results">
+  <div class="results-header">
+    <div class="results-thought">Your thought</div>
+    <div class="results-thought-text" id="resultsThoughtText"></div>
+    <button class="reset-btn" onclick="resetApp()">
+      ← New thought
+    </button>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="stat-value" id="statTasks">0</div>
+      <div class="stat-label">Daily Tasks</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="statWeeks">0</div>
+      <div class="stat-label">Week Roadmap</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="statStreak">0</div>
+      <div class="stat-label">Day Streak</div>
+    </div>
+  </div>
+
+  <div class="results-grid">
+    <!-- Daily Plan -->
+    <div class="card" style="animation-delay:0.05s">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-amber">📅</div>
+          Today's Plan
+        </div>
+      </div>
+      <div class="progress-label">
+        <span>Daily progress</span>
+        <span class="progress-pct" id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+      <div class="task-list" id="taskList" style="margin-top:16px"></div>
+    </div>
+
+    <!-- Reminders -->
+    <div class="card" style="animation-delay:0.1s">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-blue">🔔</div>
+          Reminders
+        </div>
+      </div>
+      <div class="reminder-list" id="reminderList"></div>
+    </div>
+
+    <!-- Roadmap -->
+    <div class="card full" style="animation-delay:0.15s">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-purple">🗺️</div>
+          Your Roadmap
+        </div>
+      </div>
+      <div class="roadmap-list" id="roadmapList"></div>
+    </div>
+
+    <!-- Habit Tracker -->
+    <div class="card" style="animation-delay:0.2s">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-green">📊</div>
+          Habit Tracker
+        </div>
+      </div>
+      <div class="habit-grid" id="habitGrid"></div>
+    </div>
+
+    <!-- Smart Nudges -->
+    <div class="card" style="animation-delay:0.25s">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon icon-amber">💡</div>
+          Smart Nudges
+        </div>
+      </div>
+      <div class="nudge-list" id="nudgeList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loader-ring"></div>
+  <div class="loader-steps">
+    <div class="loader-step active" id="step1">Analysing your thought...</div>
+    <div class="loader-step" id="step2">Building daily plan...</div>
+    <div class="loader-step" id="step3">Scheduling reminders...</div>
+    <div class="loader-step" id="step4">Crafting your roadmap...</div>
+  </div>
+</div>
+
+<!-- ERROR -->
+<div class="error-toast" id="errorToast"></div>
+
+<footer>
+  Made with AI · BUZZmind — <em>bridge thinking and execution</em>
+</footer>
+
+<script>
+  // ⚠️ IMPORTANT: Set this to your deployed backend proxy URL (see worker.js
+  // in the deployment package). It must NEVER point directly at
+  // api.anthropic.com — that call has to be made server-side so your API
+  // key is never exposed in the browser.
+  const API_ENDPOINT = 'https://buzzmind-proxy.YOUR-SUBDOMAIN.workers.dev/';
+
+  function setThought(text) {
+    document.getElementById('thoughtInput').value = text;
+    document.querySelector('.thought-input').focus();
+  }
+
+  function showError(msg) {
+    const t = document.getElementById('errorToast');
+    t.textContent = msg;
+    t.classList.add('visible');
+    setTimeout(() => t.classList.remove('visible'), 4000);
+  }
+
+  async function convertThought() {
+    const input = document.getElementById('thoughtInput').value.trim();
+    if (!input) {
+      showError('Please enter a thought or goal first!');
+      return;
+    }
+
+    const btn = document.getElementById('convertBtn');
+    btn.disabled = true;
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.add('active');
+
+    // Animate loader steps
+    const steps = ['step1','step2','step3','step4'];
+    let si = 0;
+    const stepInterval = setInterval(() => {
+      if (si > 0) document.getElementById(steps[si-1]).className = 'loader-step done';
+      if (si < steps.length) {
+        document.getElementById(steps[si]).className = 'loader-step active';
+        si++;
+      } else {
+        clearInterval(stepInterval);
+      }
+    }, 700);
+
+    try {
+      // NOTE: This calls YOUR OWN backend proxy (see worker.js), never the
+      // Anthropic API directly from the browser. Direct browser calls to
+      // api.anthropic.com are blocked (no CORS) and would expose your API key.
+      const response = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thought: input })
+      });
+
+      clearInterval(stepInterval);
+      steps.forEach(s => document.getElementById(s).className = 'loader-step done');
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'API error');
+      }
+
+      const plan = data;
+
+      overlay.classList.remove('active');
+      btn.disabled = false;
+      renderResults(input, plan);
+
+    } catch (err) {
+      clearInterval(stepInterval);
+      overlay.classList.remove('active');
+      btn.disabled = false;
+      showError('Something went wrong: ' + (err.message || 'Unknown error'));
+      console.error(err);
+    }
+  }
+
+  let completedCount = 0;
+  let totalTasks = 0;
+
+  function renderResults(thought, plan) {
+    completedCount = 0;
+
+    // Scroll to results
+    document.getElementById('results').classList.add('visible');
+
+    // Header
+    const q = plan.summary || thought;
+    document.getElementById('resultsThoughtText').innerHTML = `<span class="q">"${q}"</span>`;
+
+    totalTasks = plan.tasks.length;
+
+    // Stats
+    animateNumber('statTasks', plan.tasks.length);
+    animateNumber('statWeeks', plan.roadmap.length);
+    animateNumber('statStreak', 1);
+
+    // Tasks
+    const taskList = document.getElementById('taskList');
+    taskList.innerHTML = '';
+    plan.tasks.forEach((t, i) => {
+      const item = document.createElement('div');
+      item.className = 'task-item';
+      item.dataset.index = i;
+      item.innerHTML = `
+        <div class="task-check"></div>
+        <div class="task-content">
+          <div class="task-title">${escHtml(t.title)}</div>
+          <div class="task-meta">${escHtml(t.description)} · ${escHtml(t.duration)}</div>
+        </div>
+        <div class="task-time">${escHtml(t.time)}</div>
+      `;
+      item.addEventListener('click', () => toggleTask(item));
+      taskList.appendChild(item);
+    });
+
+    updateProgress();
+
+    // Reminders
+    const reminderList = document.getElementById('reminderList');
+    reminderList.innerHTML = '';
+    plan.reminders.forEach(r => {
+      const item = document.createElement('div');
+      item.className = 'reminder-item';
+      item.innerHTML = `
+        <div class="reminder-time">${escHtml(r.time)}</div>
+        <div class="reminder-text">${escHtml(r.text)}</div>
+        <div class="reminder-toggle" onclick="this.classList.toggle('off')"></div>
+      `;
+      reminderList.appendChild(item);
+    });
+
+    // Roadmap
+    const roadmapList = document.getElementById('roadmapList');
+    roadmapList.innerHTML = '';
+    plan.roadmap.forEach((r, i) => {
+      const item = document.createElement('div');
+      item.className = 'roadmap-item ' + (r.status === 'current' ? 'current' : r.status === 'done' ? 'done' : '');
+      item.innerHTML = `
+        <div class="roadmap-node">${r.status === 'done' ? '✓' : (i + 1)}</div>
+        <div class="roadmap-content">
+          <div class="roadmap-week">${escHtml(r.week)}</div>
+          <div class="roadmap-title">${escHtml(r.title)}</div>
+          <div class="roadmap-desc">${escHtml(r.description)}</div>
+        </div>
+      `;
+      roadmapList.appendChild(item);
+    });
+
+    // Habits
+    const habitGrid = document.getElementById('habitGrid');
+    const days = ['M','T','W','T','F','S','S'];
+    habitGrid.innerHTML = `
+      <div></div>
+      <div class="habit-day-labels">${days.map(d => `<div class="habit-day-label">${d}</div>`).join('')}</div>
+    `;
+    plan.habits.forEach(h => {
+      const row = document.createElement('div');
+      row.className = 'habit-name';
+      row.textContent = h.name;
+
+      const dotsWrap = document.createElement('div');
+      dotsWrap.className = 'habit-dots';
+
+      days.forEach((_, di) => {
+        const dot = document.createElement('div');
+        dot.className = 'habit-dot' + (di < 2 ? ' done' : di === 2 ? ' partial' : '');
+        if (di < 2) dot.textContent = '✓';
+        dot.addEventListener('click', () => {
+          if (dot.classList.contains('done')) {
+            dot.classList.remove('done');
+            dot.textContent = '';
+          } else {
+            dot.classList.add('done');
+            dot.textContent = '✓';
+          }
+        });
+        dotsWrap.appendChild(dot);
+      });
+
+      habitGrid.appendChild(row);
+      habitGrid.appendChild(dotsWrap);
+    });
+
+    // Nudges
+    const nudgeList = document.getElementById('nudgeList');
+    nudgeList.innerHTML = '';
+    const nudgeColors = ['icon-amber', 'icon-green', 'icon-blue', 'icon-purple'];
+    plan.nudges.forEach((n, i) => {
+      const item = document.createElement('div');
+      item.className = 'nudge-item';
+      item.innerHTML = `
+        <div class="nudge-icon ${nudgeColors[i % nudgeColors.length]}">${n.icon || '💡'}</div>
+        <div class="nudge-content">
+          <div class="nudge-title">${escHtml(n.title)}</div>
+          <div class="nudge-desc">${escHtml(n.desc)}</div>
+        </div>
+      `;
+      nudgeList.appendChild(item);
+    });
+
+    // Scroll
+    setTimeout(() => {
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
+  function toggleTask(item) {
+    const wasCompleted = item.classList.contains('completed');
+    item.classList.toggle('completed');
+    item.querySelector('.task-check').textContent = wasCompleted ? '' : '✓';
+    completedCount += wasCompleted ? -1 : 1;
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const pct = totalTasks === 0 ? 0 : Math.round((completedCount / totalTasks) * 100);
+    document.getElementById('progressPct').textContent = pct + '%';
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  function resetApp() {
+    document.getElementById('results').classList.remove('visible');
+    document.getElementById('thoughtInput').value = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => document.querySelector('.thought-input').focus(), 600);
+  }
+
+  function animateNumber(id, target) {
+    const el = document.getElementById(id);
+    let current = 0;
+    const step = Math.ceil(target / 20);
+    const interval = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = current;
+      if (current >= target) clearInterval(interval);
+    }, 40);
+  }
+
+  function escHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // Enter key support
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('thoughtInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) convertThought();
+    });
+  });
+</script>
+</body>
+</html>
